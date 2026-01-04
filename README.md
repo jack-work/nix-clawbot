@@ -72,6 +72,7 @@ You've probably installed tools before. Homebrew, pip, npm - they work until the
 - Every dependency pinned to exact versions. Forever.
 - Update breaks something? `home-manager switch --rollback` - back in 30 seconds.
 - Share your config file, get the exact same setup on another Mac.
+- **Plugins just work.** Add a GitHub URL, run one command, done. Nix handles the build, dependencies, and wiring.
 - Tools don't pollute your system - they live in isolation.
 
 You don't need to learn Nix deeply. You describe what you want, Nix figures out how to build it.
