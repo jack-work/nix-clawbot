@@ -445,11 +445,23 @@ let
   toolsReport =
     if documentsEnabled then
       let
+          toolNames =
+            (import ../tools/extended.nix { inherit pkgs; }).toolNames or [];
+          renderPkgName = pkg:
+            if pkg ? pname then pkg.pname else lib.getName pkg;
+          renderPlugin = plugin:
+            let
+              pkgNames = map renderPkgName (lib.filter (p: p != null) plugin.packages);
+              pkgSuffix =
+                if pkgNames == []
+                then ""
+                else " — " + (lib.concatStringsSep ", " pkgNames);
+            in
+              "- " + plugin.name + pkgSuffix + " (" + plugin.source + ")";
           pluginLinesFor = instName: inst:
             let
               plugins = resolvedPluginsByInstance.${instName} or [];
-              render = p: "- " + p.name + " (" + p.source + ")";
-              lines = if plugins == [] then [ "- (none)" ] else map render plugins;
+              lines = if plugins == [] then [ "- (none)" ] else map renderPlugin plugins;
             in
               [
                 ""
@@ -458,6 +470,13 @@ let
         reportLines =
           [
             "<!-- BEGIN NIX-REPORT -->"
+            ""
+            "## Nix-managed tools"
+            ""
+            "### Built-in toolchain"
+          ]
+          ++ (if toolNames == [] then [ "- (none)" ] else map (name: "- " + name) toolNames)
+          ++ [
             ""
             "## Nix-managed plugin report"
             ""

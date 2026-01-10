@@ -51,4 +51,5 @@ let
 
 in {
   tools = ensure toolNames;
+  toolNames = toolNames;
 }
