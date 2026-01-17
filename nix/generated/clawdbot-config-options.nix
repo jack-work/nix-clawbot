@@ -1653,6 +1653,9 @@ in
         region = lib.mkOption {
           type = t.str;
         };
+        remoteHost = lib.mkOption {
+          type = t.str;
+        };
         service = lib.mkOption {
           type = t.oneOf [ t.enum [ "imessage" ] t.enum [ "sms" ] t.enum [ "auto" ] ];
         };
@@ -1734,6 +1737,9 @@ in
         type = t.str;
       };
       region = lib.mkOption {
+        type = t.str;
+      };
+      remoteHost = lib.mkOption {
         type = t.str;
       };
       service = lib.mkOption {
@@ -3260,6 +3266,43 @@ in
       };
       topic = lib.mkOption {
         type = t.str;
+      };
+    }; };
+    };
+    internal = lib.mkOption {
+      type = t.submodule { options = {
+      enabled = lib.mkOption {
+        type = t.bool;
+      };
+      entries = lib.mkOption {
+        type = t.attrsOf (t.submodule { options = {
+        enabled = lib.mkOption {
+          type = t.bool;
+        };
+        env = lib.mkOption {
+          type = t.attrsOf (t.str);
+        };
+      }; });
+      };
+      handlers = lib.mkOption {
+        type = t.listOf (t.submodule { options = {
+        event = lib.mkOption {
+          type = t.str;
+        };
+        export = lib.mkOption {
+          type = t.str;
+        };
+        module = lib.mkOption {
+          type = t.str;
+        };
+      }; });
+      };
+      load = lib.mkOption {
+        type = t.submodule { options = {
+        extraDirs = lib.mkOption {
+          type = t.listOf (t.str);
+        };
+      }; };
       };
     }; };
     };
