@@ -400,6 +400,16 @@ in
           onSessionStart = lib.mkOption {
             type = t.bool;
           };
+          sessions = lib.mkOption {
+            type = t.submodule { options = {
+            deltaBytes = lib.mkOption {
+              type = t.int;
+            };
+            deltaMessages = lib.mkOption {
+              type = t.int;
+            };
+          }; };
+          };
           watch = lib.mkOption {
             type = t.bool;
           };
@@ -842,6 +852,16 @@ in
           };
           onSessionStart = lib.mkOption {
             type = t.bool;
+          };
+          sessions = lib.mkOption {
+            type = t.submodule { options = {
+            deltaBytes = lib.mkOption {
+              type = t.int;
+            };
+            deltaMessages = lib.mkOption {
+              type = t.int;
+            };
+          }; };
           };
           watch = lib.mkOption {
             type = t.bool;
@@ -3459,6 +3479,25 @@ in
 
   diagnostics = lib.mkOption {
     type = t.submodule { options = {
+    cacheTrace = lib.mkOption {
+      type = t.submodule { options = {
+      enabled = lib.mkOption {
+        type = t.bool;
+      };
+      filePath = lib.mkOption {
+        type = t.str;
+      };
+      includeMessages = lib.mkOption {
+        type = t.bool;
+      };
+      includePrompt = lib.mkOption {
+        type = t.bool;
+      };
+      includeSystem = lib.mkOption {
+        type = t.bool;
+      };
+    }; };
+    };
     enabled = lib.mkOption {
       type = t.bool;
     };
