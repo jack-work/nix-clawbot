@@ -36,7 +36,7 @@ if [ -f src/infra/net/ssrf.ts ]; then
   if ! grep -q "MOLTBOT_DNS_BYPASS" src/infra/net/ssrf.ts; then
     awk '
       /const results = await lookupFn/ {
-        print "  if (process.env.MOLTBOT_DNS_BYPASS === \"1\") {";
+        print "  if (process.env.MOLTBOT_DNS_BYPASS === \"1\" && lookupFn === dnsLookup) {";
         print "    const address = (process.env.MOLTBOT_DNS_BYPASS_IP ?? \"\").trim() || \"93.184.216.34\";";
         print "    return {";
         print "      hostname: normalized,";
@@ -48,6 +48,12 @@ if [ -f src/infra/net/ssrf.ts ]; then
       { print }
     ' src/infra/net/ssrf.ts > src/infra/net/ssrf.ts.next
     mv src/infra/net/ssrf.ts.next src/infra/net/ssrf.ts
+  fi
+fi
+
+if [ -f src/agents/session-write-lock.ts ]; then
+  if ! grep -q "MOLTBOT_TEST_ASYNC_LOCK_CLOSE" src/agents/session-write-lock.ts; then
+    perl -0pi -e 's|fsSync.closeSync\(held.handle.fd\);|if (process.env.MOLTBOT_TEST_ASYNC_LOCK_CLOSE === "1") {\n        void held.handle.close().catch(() => {});\n      } else {\n        fsSync.closeSync(held.handle.fd);\n      }|g' src/agents/session-write-lock.ts
   fi
 fi
 
