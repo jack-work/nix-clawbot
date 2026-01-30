@@ -222,7 +222,13 @@ let
         };
       };
 
-      
+      gateway.auth.tokenFile = lib.mkOption {
+        type = lib.types.str;
+        default = "";
+        description = "Path to gateway auth token file (injected into config at activation time).";
+      };
+
+
 
       launchd.enable = lib.mkOption {
         type = lib.types.bool;
@@ -302,6 +308,7 @@ let
     gatewayPort = 18789;
     providers = cfg.providers;
     routing = cfg.routing;
+    gateway = cfg.gateway;
     launchd = cfg.launchd;
     systemd = cfg.systemd;
     plugins = cfg.plugins;
@@ -765,6 +772,7 @@ let
     };
     configFile = configFile;
     configPath = inst.configPath;
+    gatewayAuthTokenFile = inst.gateway.auth.tokenFile;
 
     dirs = [ inst.stateDir inst.workspaceDir (builtins.dirOf inst.logPath) ];
 
@@ -1093,6 +1101,11 @@ in {
       };
     };
 
+    gateway.auth.tokenFile = lib.mkOption {
+      type = lib.types.str;
+      default = "";
+      description = "Path to gateway auth token file (injected into config at activation time).";
+    };
 
     launchd.enable = lib.mkOption {
       type = lib.types.bool;
@@ -1182,6 +1195,30 @@ in {
     home.activation.moltbotConfigFiles = lib.hm.dag.entryAfter [ "moltbotDirs" ] ''
       set -euo pipefail
       ${lib.concatStringsSep "\n" (map (item: "/bin/ln -sfn ${item.configFile} ${item.configPath}") instanceConfigs)}
+    '';
+
+    home.activation.moltbotGatewayAuth = lib.hm.dag.entryAfter [ "moltbotConfigFiles" ] ''
+      set -euo pipefail
+      ${lib.concatStringsSep "\n" (lib.filter (s: s != "") (map (item:
+        if item.gatewayAuthTokenFile != "" then ''
+          # Inject gateway auth token for ${item.configPath}
+          if [ -f "${item.gatewayAuthTokenFile}" ]; then
+            GATEWAY_TOKEN=$(cat "${item.gatewayAuthTokenFile}")
+            if [ -n "$GATEWAY_TOKEN" ]; then
+              CONFIG_FILE="${item.configPath}"
+              if [ -L "$CONFIG_FILE" ]; then
+                STORE_PATH=$(readlink -f "$CONFIG_FILE")
+                rm "$CONFIG_FILE"
+                cp "$STORE_PATH" "$CONFIG_FILE"
+                chmod 600 "$CONFIG_FILE"
+              fi
+              ${pkgs.jq}/bin/jq --arg token "$GATEWAY_TOKEN" '.gateway.auth = { token: $token }' "$CONFIG_FILE" > "$CONFIG_FILE.tmp"
+              mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
+              chmod 600 "$CONFIG_FILE"
+            fi
+          fi
+        '' else ""
+      ) instanceConfigs))}
     '';
 
     home.activation.moltbotPluginGuard = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
