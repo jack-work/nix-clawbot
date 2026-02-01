@@ -51,10 +51,10 @@ openclaw_node_modules = os.path.join(openclaw_lib, "node_modules")
 probe_env = f"{user_env} NODE_PATH={openclaw_node_modules}"
 
 pi_pkg = machine.succeed(
-    f"su - alice -c '{probe_env} {node_bin} -e \"console.log(require.resolve(\\\"@mariozechner/pi-coding-agent/package.json\\\"))\"'"
+    f"su - alice -c '{probe_env} {node_bin} -e \"console.log(require.resolve(\\\"@mariozechner/pi-coding-agent\\\"))\"'"
 ).strip()
 if not pi_pkg:
-    raise Exception("failed to resolve pi-coding-agent package.json")
+    raise Exception("failed to resolve pi-coding-agent entry")
 
 
 def run_probe(label, command):
