@@ -42,5 +42,17 @@ if [ -n "${PATCH_CLIPBOARD_SH:-}" ]; then
   "$PATCH_CLIPBOARD_SH" "$out/lib/openclaw" "$PATCH_CLIPBOARD_WRAPPER"
 fi
 
+# Work around missing combined-stream dependency for form-data in pnpm layout.
+combined_stream_src="$(find "$out/lib/openclaw/node_modules/.pnpm" -path "*/combined-stream@*/node_modules/combined-stream" -print | head -n 1)"
+form_data_pkgs="$(find "$out/lib/openclaw/node_modules/.pnpm" -path "*/node_modules/form-data" -print)"
+if [ -n "$combined_stream_src" ] && [ -n "$form_data_pkgs" ]; then
+  for pkg in $form_data_pkgs; do
+    if [ ! -e "$pkg/node_modules/combined-stream" ]; then
+      mkdir -p "$pkg/node_modules"
+      ln -s "$combined_stream_src" "$pkg/node_modules/combined-stream"
+    fi
+  done
+fi
+
 bash -e -c '. "$STDENV_SETUP"; makeWrapper "$NODE_BIN" "$out/bin/openclaw" --add-flags "$out/lib/openclaw/dist/index.js" --set-default OPENCLAW_NIX_MODE "1" --set-default MOLTBOT_NIX_MODE "1" --set-default CLAWDBOT_NIX_MODE "1"'
 ln -s "$out/bin/openclaw" "$out/bin/moltbot"
