@@ -31,9 +31,6 @@ except Exception:
         f"su - alice -c '{user_env} systemctl --user show openclaw-gateway.service -p ActiveState -p SubState -p ExecMainCode -p ExecMainStatus -p MainPID --no-pager 2>&1' || true"
     )
     machine.succeed(
-        f"su - alice -c '{user_env} systemctl --user cat openclaw-gateway.service --no-pager 2>&1' || true"
-    )
-    machine.succeed(
         "journalctl --user -u openclaw-gateway.service --no-pager -n 200 2>&1 || true"
     )
     machine.succeed("ls -la /tmp/openclaw/openclaw-gateway.log || true")
@@ -45,6 +42,6 @@ except Exception:
     machine.succeed("tail -n 200 /tmp/openclaw/node-report* || true")
     machine.succeed("coredumpctl info --no-pager | tail -n 200 || true")
     machine.succeed(
-        f"su - alice -c '{user_env} systemctl --user show openclaw-gateway.service -p Environment --no-pager 2>&1' || true"
+        f"su - alice -c '{user_env} systemctl --user show openclaw-gateway.service --no-pager 2>&1 | sed -n \"s/^Environment=//p\"' || true"
     )
     raise
