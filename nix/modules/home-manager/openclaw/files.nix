@@ -78,6 +78,29 @@ let
     in
       lib.listToAttrs (lib.flatten (lib.mapAttrsToList entriesForInstance enabledInstances));
 
+  documentsRequiredFiles = [
+    "AGENTS.md"
+    "SOUL.md"
+    "TOOLS.md"
+  ];
+
+  documentsOptionalFiles = [
+    "IDENTITY.md"
+    "USER.md"
+    "LORE.md"
+    "HEARTBEAT.md"
+    "PROMPTING-EXAMPLES.md"
+  ];
+
+  documentsFileNames =
+    if documentsEnabled then
+      let
+        extra = lib.filter (file: builtins.pathExists (cfg.documents + "/${file}")) documentsOptionalFiles;
+      in
+        documentsRequiredFiles ++ extra
+    else
+      [];
+
   documentsAssertions = lib.optionals documentsEnabled [
     {
       assertion = builtins.pathExists cfg.documents;
@@ -107,9 +130,7 @@ let
           fi
         '';
         guardForDir = dir: ''
-          ${guardLine "${dir}/AGENTS.md"}
-          ${guardLine "${dir}/SOUL.md"}
-          ${guardLine "${dir}/TOOLS.md"}
+          ${lib.concatStringsSep "\n" (map (name: guardLine "${dir}/${name}") documentsFileNames)}
         '';
       in
         lib.concatStringsSep "\n" (map guardForDir instanceWorkspaceDirs)
@@ -180,17 +201,16 @@ let
   documentsFiles =
     if documentsEnabled then
       let
-        mkDocFiles = dir: {
-          "${toRelative (dir + "/AGENTS.md")}" = {
-            source = cfg.documents + "/AGENTS.md";
-          };
-          "${toRelative (dir + "/SOUL.md")}" = {
-            source = cfg.documents + "/SOUL.md";
-          };
-          "${toRelative (dir + "/TOOLS.md")}" = {
-            source = toolsWithReport;
-          };
-        };
+        mkDocFiles = dir:
+          let
+            mkDoc = name: {
+              name = toRelative (dir + "/${name}");
+              value = {
+                source = if name == "TOOLS.md" then toolsWithReport else cfg.documents + "/${name}";
+              };
+            };
+          in
+            lib.listToAttrs (map mkDoc documentsFileNames);
       in
         lib.mkMerge (map mkDocFiles instanceWorkspaceDirs)
     else

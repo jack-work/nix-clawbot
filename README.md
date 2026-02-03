@@ -124,7 +124,7 @@ What nix-openclaw is:
 What I need you to do:
 1. Check if Determinate Nix is installed (if not, install it)
 2. Create a local flake at ~/code/openclaw-local using templates/agent-first/flake.nix
-3. Create a docs dir next to the config (e.g., ~/code/openclaw-local/documents) with AGENTS.md, SOUL.md, TOOLS.md
+3. Create a docs dir next to the config (e.g., ~/code/openclaw-local/documents) with AGENTS.md, SOUL.md, TOOLS.md (optional: IDENTITY.md, USER.md, LORE.md, HEARTBEAT.md, PROMPTING-EXAMPLES.md)
    - If ~/.openclaw/workspace already has these files, adopt them into the documents dir first
 4. Help me create a Telegram bot (@BotFather) and get my chat ID (@userinfobot)
 5. Set up secrets (bot token, Anthropic key) - plain files at ~/.secrets/ is fine
@@ -162,7 +162,7 @@ Your agent will install Nix, create your config, and get Openclaw running. You j
 3. Edit `flake.nix` placeholders:
    - `system` = `aarch64-darwin` (Apple Silicon) or `x86_64-darwin` (Intel)
    - `home.username` and `home.homeDirectory`
-   - `programs.openclaw.documents` with `AGENTS.md`, `SOUL.md`, `TOOLS.md`
+   - `programs.openclaw.documents` with `AGENTS.md`, `SOUL.md`, `TOOLS.md` (optional: `IDENTITY.md`, `USER.md`, `LORE.md`, `HEARTBEAT.md`, `PROMPTING-EXAMPLES.md`)
    - Provider secrets (Telegram/Discord tokens, Anthropic API key)
 4. Apply:
    ```bash
@@ -184,7 +184,7 @@ Your agent will install Nix, create your config, and get Openclaw running. You j
 3. Edit `flake.nix` placeholders:
    - `system` = `x86_64-linux`
    - `home.username` and `home.homeDirectory` (e.g., `/home/<user>`)
-   - `programs.openclaw.documents` with `AGENTS.md`, `SOUL.md`, `TOOLS.md`
+   - `programs.openclaw.documents` with `AGENTS.md`, `SOUL.md`, `TOOLS.md` (optional: `IDENTITY.md`, `USER.md`, `LORE.md`, `HEARTBEAT.md`, `PROMPTING-EXAMPLES.md`)
    - Provider secrets (Telegram/Discord tokens, Anthropic API key)
 4. Apply:
    ```bash
