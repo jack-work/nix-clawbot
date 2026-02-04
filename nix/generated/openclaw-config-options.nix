@@ -274,6 +274,10 @@ in
       };
       heartbeat = lib.mkOption {
         type = t.nullOr (t.submodule { options = {
+        accountId = lib.mkOption {
+          type = t.nullOr (t.str);
+          default = null;
+        };
         ackMaxChars = lib.mkOption {
           type = t.nullOr (t.int);
           default = null;
@@ -890,6 +894,10 @@ in
       };
       heartbeat = lib.mkOption {
         type = t.nullOr (t.submodule { options = {
+        accountId = lib.mkOption {
+          type = t.nullOr (t.str);
+          default = null;
+        };
         ackMaxChars = lib.mkOption {
           type = t.nullOr (t.int);
           default = null;
