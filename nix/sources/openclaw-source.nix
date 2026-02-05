@@ -1,8 +1,8 @@
-# Pinned Openclaw source for nix-openclaw
+# Pinned Openclaw source - using jack-work/openclaw fork with message:received hook
 {
-  owner = "openclaw";
+  owner = "jack-work";
   repo = "openclaw";
-  rev = "54ddbc466085b42526983f6c90d152fdd7bf365f";
-  hash = "sha256-gQwwra9c9ID3O+W/fRNgSXHvjTASYV/lng7d+f1+XT4=";
+  rev = "e8aeb2f5009e51bd8cb655e510a22c7eda5bac1e";
+  hash = "sha256-B/RdrvNSvUW0RQZyKWkO4p8MXVAonkmeF4a3/UgaDv0=";
   pnpmDepsHash = "sha256-wxO+ADH4SBIek6LxMCXPa9SeG0pujx7Q4Omvonie7Ec=";
 }
