@@ -2,7 +2,7 @@
 {
   owner = "jack-work";
   repo = "openclaw";
-  rev = "e8aeb2f5009e51bd8cb655e510a22c7eda5bac1e";
-  hash = "sha256-B/RdrvNSvUW0RQZyKWkO4p8MXVAonkmeF4a3/UgaDv0=";
-  pnpmDepsHash = "sha256-wxO+ADH4SBIek6LxMCXPa9SeG0pujx7Q4Omvonie7Ec=";
+  rev = "e63d3e94291b383ed8c917dd1bf66eaa86a0877e";
+  hash = "sha256-plll+u0Mwy751bcLbldQi5yH6qAMHRZykka8wiQSiqo=";
+  pnpmDepsHash = "sha256-NkW7Yz5z9ugRBcX13DSvnwUFkulDiIH+HOF/tJKKS0g=";
 }
